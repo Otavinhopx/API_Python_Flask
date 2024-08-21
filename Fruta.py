@@ -1,5 +1,7 @@
 from flask_restful import Resource, reqparse
 
+#Simulação de banco de dados
+
 frutas = [
     {
         'fruta_id' : 'laranja',
@@ -19,7 +21,9 @@ frutas = [
         'corFruta' : 'vermelha',
         'precoFruta' : 1.20
     }
-]
+] 
+
+#Classe
 
 class Frutas(Resource):
     def get(self):
