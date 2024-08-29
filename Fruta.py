@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from models.Fruta import FrutaModel
 
 #Simulação de banco de dados
 
@@ -30,10 +31,10 @@ class Frutas(Resource):
         return{'frutas' : frutas}
     
 class Fruta(Resource):
-    argumentos = reqparse.RequestParser
+    argumentos = reqparse.RequestParser()
     argumentos.add_argument('nomeFruta')
     argumentos.add_argument('corFruta')
-    argumentos.add_argument('preçoFruta', type=float)
+    argumentos.add_argument('precoFruta', type=float)
     
     def findfruta(fruta_id):
          for fruta in frutas :
@@ -50,30 +51,22 @@ class Fruta(Resource):
     def post(self, fruta_id) :
         
         dados = Fruta.argumentos.parse_args()
+        novaFruta = FrutaModel(fruta_id, **dados)
+        frutaJson = novaFruta.transformaJson()
+        frutas.append(frutaJson)
         
-        novaFruta = {
-            'fruta_id' : fruta_id,
-            **dados
-        }
-        
-        frutas.append(novaFruta)
-        
-        return novaFruta, 201
+        return frutaJson, 201
     
     def put(self, fruta_id):
         
         dados = Fruta.argumentos.parse_args()
-        
-        novaFruta = {
-            'fruta_id' : fruta_id,
-            **dados
-        }
-        
+        novaFruta = FrutaModel(fruta_id, **dados)
+        frutaJson = novaFruta.transformaJson()
         fruta = Fruta.findfruta(fruta_id)
         
         if fruta :
-            fruta.update(novaFruta)
-            return novaFruta, 200
+            fruta.update(frutaJson)
+            return frutaJson, 200
             
         return {'message' : 'Fruta not found to update'}, 404
     
